@@ -3,5 +3,10 @@
     "type": "library",
     "license": "GPLv4",
     "minimum-stability": "dev",
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "GoVc\\": "src/"
+        }
+    }
 }
