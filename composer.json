@@ -3,10 +3,14 @@
     "type": "library",
     "license": "GPLv3",
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "symfony/process": "^5.0@dev",
+        "tencentcloud/tencentcloud-sdk-php": "3.0.*"
+
+    },
     "autoload": {
         "psr-4": {
-            "GoVc\\": "src/"
+            "MisakaCloud\\GoVC\\": "src/"
         }
     }
 }
