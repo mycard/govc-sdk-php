@@ -1,0 +1,7 @@
+{
+    "name": "gzzchh/govc-sdk-php",
+    "type": "library",
+    "license": "GPLv4",
+    "minimum-stability": "dev",
+    "require": {}
+}
