@@ -6,7 +6,7 @@ use MisakaCloud\GoVC\GoVC;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class  VM extends GoVC;
+class  VM
 {
     private $GovcBin;
     private $GovcURL;
