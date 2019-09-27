@@ -27,7 +27,7 @@ class  VM
 
     protected function runAsync($cmd)
     {
-        $process = new Process($cmd, null, ['ENV_VAR_NAME' => $this->GovcURL]);
+        $process = new Process($cmd, null, ['GOVC_URL' => $this->GovcURL]);
         $process->run();
 
         // 失败处理
@@ -78,7 +78,7 @@ class  VM
         $this->runAsync($cmd);
     }
 
-    public function change($annotation, $cpuHotAdd, $cpuLimit, $cpuPerformanceCounter, $cpuReservation, $cpus, $cpuShares, $guestOS, $memoryLimit, $memory, $memoryHotAdd, $memoryShare, $nestedHvEnabled, $syncTimeWithHost, $vm, array $extraConfig)
+    public function change($annotation, $cpuHotAdd, $cpuLimit, $cpuPerformanceCounter, $cpuReservation, $cpus, $cpuShares, $guestOS, $memoryLimit, $memoryReservation, $memory, $memoryHotAdd, $memoryShare, $nestedHvEnabled, $syncTimeWithHost, $vm, array $extraConfig)
     {
         $cmd = [$this->GovcBin, 'vm.change', '-vm', $vm];
 
@@ -96,7 +96,7 @@ class  VM
             array_merge($cmd, $cpuHotAddParameter);
         }
 
-        // CPU资源限制方面不填写 则设置为 -1 代表不受限制
+        // CPU限制方面不填写 则设置为 -1 代表不受限制
         if ($cpuLimit != null) {
             // -cpu.limit int
             $cpuLimitParameter = ['-cpu.limit', $cpuLimit];
@@ -131,12 +131,62 @@ class  VM
             $cpuSharesParameter = ['-cpu.shares', $cpuShares];
             array_merge($cmd, $cpuSharesParameter);
         }
-        
+
         // GuestOS 客户机系统类型
         if ($guestOS != null) {
             // -g string
             $guestOSParameter = ['-g', $guestOS];
             array_merge($cmd, $guestOSParameter);
+        }
+
+        // 内存限制 同CPU
+        if ($memoryLimit != null) {
+            // -mem.limit int
+            $memoryLimitParameter = ['-mem.limit', $memoryLimit];
+            array_merge($cmd, $memoryLimitParameter);
+        }
+
+        // 内存保留 同CPU
+        if ($memoryReservation != null) {
+            // -mem.reservation int
+            $memoryReservationParameter = ['-mem.limit', $memoryReservation];
+            array_merge($cmd, $memoryReservationParameter);
+        }
+
+        // 内存大小 单位是MB
+        if ($memory != null) {
+            // -m int
+            $memoryParameter = ['-m', $memory];
+            array_merge($cmd, $memoryParameter);
+        }
+
+        // 内存热添加
+        if ($memoryHotAdd != null) {
+            //  -memory-hot-add-enabled bool
+            $memoryHotAddParameter = ['-memory-hot-add-enabled', $memoryHotAdd];
+            array_merge($cmd, $memoryHotAddParameter);
+        }
+
+        // 内存份额 同CPU
+        if ($memoryShare != null) {
+            // -mem.shares {normal,high,low}
+            // -mem.shares int
+            $memoryShareParameter = ['-mem.shares', $memoryShare];
+            array_merge($cmd, $memoryShareParameter);
+        }
+
+        // 嵌套虚拟化
+        if ($nestedHvEnabled != null) {
+            // -nested-hv-enabled bool
+            $nestedHvEnabledParameter = ['-nested-hv-enabled', $nestedHvEnabled];
+            array_merge($cmd, $nestedHvEnabledParameter);
+        }
+
+        // 同步系统时间
+        if ($syncTimeWithHost != null) {
+            // -sync-time-with-host bool
+            $syncTimeWithHostParameter = ['-sync-time-with-host', $syncTimeWithHost];
+            array_merge($cmd, $syncTimeWithHostParameter);
         }
     }
 }
