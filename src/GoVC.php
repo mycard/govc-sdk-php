@@ -47,7 +47,4 @@ class GoVC
         $vm = new VM($this->goVcBin, $this->goVcUrl, $this->timeout);
         return $vm;
     }
-
-
 }
-

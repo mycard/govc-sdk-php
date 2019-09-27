@@ -6,7 +6,7 @@ use MisakaCloud\GoVC\GoVC;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class  VM
+class VM
 {
     private $GovcBin;
     private $GovcURL;
@@ -49,7 +49,6 @@ class  VM
             // 快照克隆模式 使用链接
             // govc vm.clone -host dstHost -net.address= MACAddr -vm template-vm -link -snapshot s-name new-vm
             $cmd = [$this->GovcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-link', '-snapshot', $vmSnapshot, $vmDestination];
-
         } elseif ($useSnapshot == true & $useLink == false) {
             // 快照克隆模式 不使用链接
             // govc vm.clone -host dstHost -vm template-vm -snapshot s-name new-vm
@@ -188,6 +187,8 @@ class  VM
             $syncTimeWithHostParameter = ['-sync-time-with-host', $syncTimeWithHost];
             array_merge($cmd, $syncTimeWithHostParameter);
         }
+
+        // 最后就是运行了哦
+        $this->runAsync($cmd);
     }
 }
-
