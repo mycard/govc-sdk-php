@@ -8,26 +8,30 @@ use Symfony\Component\Process\Process;
 
 class VM
 {
-    private $GovcBin;
-    private $GovcURL;
+    private $goVcBin;
+    private $goVcURL;
     private $timeout;
+    private $dataCenter;
 
     /**
-     * GoVC constructor.
-     * @param $GovcBin
-     * @param $GovcURL
+     * VM constructor.
+     * @param $goVcBin
+     * @param $goVcURL
      * @param $timeout
+     * @param $dataCenter
      */
-    public function __construct($GovcBin, $GovcURL, $timeout)
+    public function __construct($goVcBin, $goVcURL, $timeout, $dataCenter)
     {
-        $this->GovcBin = $GovcBin;
-        $this->GovcURL = $GovcURL;
+        $this->goVcBin = $goVcBin;
+        $this->goVcURL = $goVcURL;
         $this->timeout = $timeout;
+        $this->dataCenter = $dataCenter;
     }
+
 
     protected function runAsync($cmd)
     {
-        $process = new Process($cmd, null, ['GOVC_URL' => $this->GovcURL]);
+        $process = new Process($cmd, null, ['GOVC_URL' => $this->goVcURL]);
         $process->run();
 
         // 失败处理
@@ -48,19 +52,19 @@ class VM
         if ($useSnapshot == true & $useLink == true) {
             // 快照克隆模式 使用链接
             // govc vm.clone -host dstHost -net.address= MACAddr -vm template-vm -link -snapshot s-name new-vm
-            $cmd = [$this->GovcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-link', '-snapshot', $vmSnapshot, $vmDestination];
+            $cmd = [$this->goVcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-link', '-snapshot', $vmSnapshot, $vmDestination];
         } elseif ($useSnapshot == true & $useLink == false) {
             // 快照克隆模式 不使用链接
             // govc vm.clone -host dstHost -vm template-vm -snapshot s-name new-vm
-            $cmd = [$this->GovcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-snapshot', $vmSnapshot, $vmDestination];
+            $cmd = [$this->goVcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-snapshot', $vmSnapshot, $vmDestination];
         } elseif ($useSnapshot == false & $useLink == true) {
             // 普通克隆模式 使用链接
             // govc vm.clone -host dstHost -vm template-vm -link new-vm
-            $cmd = [$this->GovcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-link', $vmDestination];
+            $cmd = [$this->goVcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-link', $vmDestination];
         } elseif ($useSnapshot == false & $useLink == false) {
             // 普通克隆模式 不使用链接
             // govc vm.clone -host dstHost -vm template-vm new-vm
-            $cmd = [$this->GovcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, $vmDestination];
+            $cmd = [$this->goVcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, $vmDestination];
         }
         $this->runAsync($cmd);
     }
@@ -73,13 +77,13 @@ class VM
         // 查询需虚拟机信息
         // govc vm.info -e=false -g=true -r=false -t=false
 
-        $cmd = [$this->GovcBin, 'vm.info', '-json', $showExtraParameter, $showResourceParameter, $showToolsConfigInfoParameter, $vm];
+        $cmd = [$this->goVcBin, 'vm.info', '-json', $showExtraParameter, $showResourceParameter, $showToolsConfigInfoParameter, $vm];
         $this->runAsync($cmd);
     }
 
     public function change($annotation, $cpuHotAdd, $cpuLimit, $cpuPerformanceCounter, $cpuReservation, $cpus, $cpuShares, $guestOS, $memoryLimit, $memoryReservation, $memory, $memoryHotAdd, $memoryShare, $nestedHvEnabled, $syncTimeWithHost, $vm, array $extraConfig)
     {
-        $cmd = [$this->GovcBin, 'vm.change', '-vm', $vm];
+        $cmd = [$this->goVcBin, 'vm.change', '-vm', $vm];
 
         // 虚拟机备注
         if ($annotation != null) {
