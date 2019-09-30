@@ -10,5 +10,6 @@
         "psr-4": {
             "MisakaCloud\\GoVC\\": "src/"
         }
-    }
+    },
+    "version": "1.0.0"
 }

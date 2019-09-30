@@ -1,16 +1,31 @@
 <?php
 
-namespace MisakaCloud\GoVC\Cmds;
+namespace MisakaCloud\GoVC\Cmds\VM;
 
-use MisakaCloud\GoVC\GoVC;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
+use MisakaCloud\GoVC\Cmds\VM\Network\Network;
+use MisakaCloud\GoVc\Helper\ProcessHelper;
 
+/**
+ * Class VM
+ * @package MisakaCloud\GoVC\Cmds\VM
+ */
 class VM
 {
+    /**
+     * @var
+     */
     private $goVcBin;
+    /**
+     * @var
+     */
     private $goVcURL;
+    /**
+     * @var
+     */
     private $timeout;
+    /**
+     * @var
+     */
     private $dataCenter;
 
     /**
@@ -28,23 +43,27 @@ class VM
         $this->dataCenter = $dataCenter;
     }
 
-
-    protected function runAsync($cmd)
+    /**
+     * @return Network
+     */
+    public function network()
     {
-        $process = new Process($cmd, null, ['GOVC_URL' => $this->goVcURL]);
-        $process->run();
-
-        // 失败处理
-        if (!$process->isSuccessful()) {
-//            throw new ProcessFailedException($process);
-            return $process->getErrorOutput();
-        }
-
-        return $process->getOutput();
+        $vmNetwork = new Network($this->goVcBin, $this->goVcURL, $this->timeout, $this->dataCenter);
+        return $vmNetwork;
     }
 
+    /**
+     * @param $vmTemplate
+     * @param $vmSnapshot
+     * @param $vmDestination
+     * @param $useLink
+     * @param $useSnapshot
+     * @param $host
+     * @param $mac
+     */
     public function clone($vmTemplate, $vmSnapshot, $vmDestination, $useLink, $useSnapshot, $host, $mac)
     {
+        $cmd = [];
         // 如果你不写快照 那么就禁止使用快照克隆
         if ($vmSnapshot == null) {
             $useSnapshot = false;
@@ -66,9 +85,15 @@ class VM
             // govc vm.clone -host dstHost -vm template-vm new-vm
             $cmd = [$this->goVcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, $vmDestination];
         }
-        $this->runAsync($cmd);
+        ProcessHelper::runAsync($cmd, $this->goVcURL);
     }
 
+    /**
+     * @param $vm
+     * @param $showExtra
+     * @param $showResource
+     * @param $showToolsConfigInfo
+     */
     public function info($vm, $showExtra, $showResource, $showToolsConfigInfo)
     {
         $showExtraParameter = '-e=' . $showExtra;
@@ -78,57 +103,76 @@ class VM
         // govc vm.info -e=false -g=true -r=false -t=false
 
         $cmd = [$this->goVcBin, 'vm.info', '-json', $showExtraParameter, $showResourceParameter, $showToolsConfigInfoParameter, $vm];
-        $this->runAsync($cmd);
+        ProcessHelper::runAsync($cmd, $this->goVcURL);
     }
 
-    public function change($annotation, $cpuHotAdd, $cpuLimit, $cpuPerformanceCounter, $cpuReservation, $cpus, $cpuShares, $guestOS, $memoryLimit, $memoryReservation, $memory, $memoryHotAdd, $memoryShare, $nestedHvEnabled, $syncTimeWithHost, $vm, array $extraConfig)
+    /**
+     * @param $annotation
+     * @param $cpuHotAdd
+     * @param $cpuLimit
+     * @param $cpuPerformanceCounter
+     * @param $cpuReservation
+     * @param $cpus
+     * @param $cpuShares
+     * @param $guestOS
+     * @param $memoryLimit
+     * @param $memoryReservation
+     * @param $memory
+     * @param $memoryHotAdd
+     * @param $memoryShare
+     * @param $nestedHvEnabled
+     * @param $syncTimeWithHost
+     * @param $vm
+     * @param array $extraConfig
+     */
+    public function change($vm, $annotation, $cpuHotAdd, $cpuLimit, $cpuPerformanceCounter, $cpuReservation, $cpus, $cpuShares, $guestOS, $memoryLimit, $memoryReservation, $memory, $memoryHotAdd, $memoryShare, $nestedHvEnabled, $syncTimeWithHost, array $extraConfig)
     {
         $cmd = [$this->goVcBin, 'vm.change', '-vm', $vm];
 
         // 虚拟机备注
-        if ($annotation != null) {
+        if (!empty($annotation)) {
             // -annotation string
             $annotationParameter = ['-annotation', $annotation];
             array_merge($cmd, $annotationParameter);
         }
 
         // CPU热添加
-        if ($cpuHotAdd != null) {
+        if (!empty($cpuHotAdd)) {
             // -cpu-hot-add-enabled bool
             $cpuHotAddParameter = ['-cpu-hot-add-enabled', $cpuHotAdd];
             array_merge($cmd, $cpuHotAddParameter);
         }
 
         // CPU限制方面不填写 则设置为 -1 代表不受限制
-        if ($cpuLimit != null) {
+        if (!empty($cpuLimit)) {
             // -cpu.limit int
             $cpuLimitParameter = ['-cpu.limit', $cpuLimit];
             array_merge($cmd, $cpuLimitParameter);
         }
 
         // CPU虚拟化计数器
-        if ($cpuPerformanceCounter != null) {
+        if (!empty($cpuPerformanceCounter)) {
             // -vpmc-enabled bool
             $cpuPerformanceCounterParameter = ['-vpmc-enabled', $cpuPerformanceCounter];
             array_merge($cmd, $cpuPerformanceCounterParameter);
         }
 
         // CPU保留 最少为 0
-        if ($cpuReservation != null) {
+        if (!empty($cpuReservation)) {
             // -cpu.reservation int
             $cpuReservationParameter = ['-cpu.reservation', $cpuReservation];
             array_merge($cmd, $cpuReservationParameter);
         }
 
         // CPU核心数
-        if ($cpus != null) {
+        if (!empty($cpus)) {
             // -c int
             $cpusParameter = ['-c', $cpus];
             array_merge($cmd, $cpusParameter);
         }
 
         // CPU份额
-        if ($cpuShares != null) {
+        if (!empty($cpuShares)) {
             // -cpu.shares {normal,high,low}
             // -cpu.shares int
             $cpuSharesParameter = ['-cpu.shares', $cpuShares];
@@ -136,42 +180,42 @@ class VM
         }
 
         // GuestOS 客户机系统类型
-        if ($guestOS != null) {
+        if (!empty($guestOS)) {
             // -g string
             $guestOSParameter = ['-g', $guestOS];
             array_merge($cmd, $guestOSParameter);
         }
 
         // 内存限制 同CPU
-        if ($memoryLimit != null) {
+        if (!empty($memoryLimit)) {
             // -mem.limit int
             $memoryLimitParameter = ['-mem.limit', $memoryLimit];
             array_merge($cmd, $memoryLimitParameter);
         }
 
         // 内存保留 同CPU
-        if ($memoryReservation != null) {
+        if (!empty($memoryReservation)) {
             // -mem.reservation int
             $memoryReservationParameter = ['-mem.limit', $memoryReservation];
             array_merge($cmd, $memoryReservationParameter);
         }
 
         // 内存大小 单位是MB
-        if ($memory != null) {
+        if (!empty($memory)) {
             // -m int
             $memoryParameter = ['-m', $memory];
             array_merge($cmd, $memoryParameter);
         }
 
         // 内存热添加
-        if ($memoryHotAdd != null) {
+        if (!empty($memoryHotAdd)) {
             //  -memory-hot-add-enabled bool
             $memoryHotAddParameter = ['-memory-hot-add-enabled', $memoryHotAdd];
             array_merge($cmd, $memoryHotAddParameter);
         }
 
         // 内存份额 同CPU
-        if ($memoryShare != null) {
+        if (!empty($memoryShare)) {
             // -mem.shares {normal,high,low}
             // -mem.shares int
             $memoryShareParameter = ['-mem.shares', $memoryShare];
@@ -179,20 +223,86 @@ class VM
         }
 
         // 嵌套虚拟化
-        if ($nestedHvEnabled != null) {
+        if (!empty($nestedHvEnabled)) {
             // -nested-hv-enabled bool
             $nestedHvEnabledParameter = ['-nested-hv-enabled', $nestedHvEnabled];
             array_merge($cmd, $nestedHvEnabledParameter);
         }
 
         // 同步系统时间
-        if ($syncTimeWithHost != null) {
+        if (!empty($syncTimeWithHost)) {
             // -sync-time-with-host bool
             $syncTimeWithHostParameter = ['-sync-time-with-host', $syncTimeWithHost];
             array_merge($cmd, $syncTimeWithHostParameter);
         }
 
         // 最后就是运行了哦
-        $this->runAsync($cmd);
+        ProcessHelper::runAsync($cmd, $this->goVcURL);
+    }
+
+    /**
+     * @param $vm
+     * @param $powerActionType
+     * @param $force
+     * @param $waitForComplete
+     */
+    public function power($vm, $powerActionType, $force, $waitForComplete)
+    {
+        // vm.power
+        $cmd = [$this->goVcBin, 'vm.power'];
+        $powerActionTypeParameter = [];
+        switch ($powerActionType) {
+            // 强制断电
+            case "powerOff":
+                $powerActionTypeParameter = ['-off'];
+                break;
+            // 开机
+            case "powerOn":
+                $powerActionTypeParameter = ['-on'];
+                break;
+            // 一般性重启 (装了Tools之后的软重启)
+            case "rebootGuest":
+                $powerActionTypeParameter = ['-r'];
+                break;
+            // 重置
+            case "powerResetGuest":
+                $powerActionTypeParameter = ['-reset'];
+                break;
+            // 软关机
+            case "shutdownGuest":
+                $powerActionTypeParameter = ['-s'];
+                break;
+            // 挂起
+            case "suspendGuest":
+                $powerActionTypeParameter = ['-suspend'];
+                break;
+        }
+
+        array_merge($cmd, $powerActionTypeParameter);
+
+        if (!empty($waitForComplete)) {
+            // -wait bool
+            $waitForCompleteParameter = ['-wait', $waitForComplete];
+            array_merge($cmd, $waitForCompleteParameter);
+        }
+
+        if (!empty($force)) {
+            // -force bool
+            $forceParameter = ['-force', $force];
+            array_merge($cmd, $forceParameter);
+        }
+
+        array_merge($cmd, [$vm]);
+        ProcessHelper::runAsync($cmd, $this->goVcURL);
+    }
+
+    /**
+     * @param $vm
+     */
+    public function destroy($vm)
+    {
+        // vm.destroy
+        $cmd = [$this->goVcBin, 'vm.destroy', $vm];
+        ProcessHelper::runAsync($cmd, $this->goVcURL);
     }
 }

@@ -3,26 +3,31 @@
 
 namespace MisakaCloud\GoVC;
 
-use MisakaCloud\GoVC\Cmds\VM;
+//use MisakaCloud\GoVC\Cmds\VM;
+use MisakaCloud\GoVC\Cmds\VM\VM;
 
+/**
+ * Class GoVC
+ * @package MisakaCloud\GoVC
+ */
 class GoVC
 {
     private $goVcBin;
-    private $goVcUrl;
+    private $goVcURL;
     private $timeout;
     private $dataCenter;
 
     /**
      * GoVC constructor.
      * @param $goVcBin
-     * @param $goVcUrl
+     * @param $goVcURL
      * @param $timeout
      * @param $dataCenter
      */
-    public function __construct($goVcBin, $goVcUrl, $timeout, $dataCenter)
+    public function __construct($goVcBin, $goVcURL, $timeout, $dataCenter)
     {
         $this->goVcBin = $goVcBin;
-        $this->goVcUrl = $goVcUrl;
+        $this->goVcURL = $goVcURL;
         $this->timeout = $timeout;
         $this->dataCenter = $dataCenter;
     }
@@ -46,7 +51,7 @@ class GoVC
 
     public function vm()
     {
-        $vm = new VM($this->goVcBin, $this->goVcUrl, $this->timeout, $this->dataCenter);
+        $vm = new VM($this->goVcBin, $this->goVcURL, $this->timeout, $this->dataCenter);
         return $vm;
     }
 }
