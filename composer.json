@@ -2,7 +2,7 @@
     "name": "gzzchh/govc-sdk-php",
     "type": "library",
     "license": "GPL-3.0-or-later",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "symfony/process": "^5.0@dev"
     },
