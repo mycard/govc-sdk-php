@@ -4,7 +4,7 @@
     "license": "GPL-3.0-or-later",
     "minimum-stability": "stable",
     "require": {
-        "symfony/process": "^5.0@dev"
+        "symfony/process": "^4.3"
     },
     "autoload": {
         "psr-4": {
