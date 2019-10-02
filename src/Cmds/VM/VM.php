@@ -60,31 +60,38 @@ class VM
      * @param $useSnapshot
      * @param $host
      * @param $mac
+     * @param $dataStore
      */
-    public function clone($vmTemplate, $vmSnapshot, $vmDestination, $useLink, $useSnapshot, $host, $mac)
+    public function clone($vmTemplate, $vmSnapshot, $vmDestination, $useLink, $useSnapshot, $host, $mac, $dataStore)
     {
-        $cmd = [];
+        // 基础命令
+        // govc vm.clone -host dstHost -net.address= MACAddr -vm template-vm
+        $cmd = [$this->goVcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-d', $dataStore];
+        $modeParameter = [];
         // 如果你不写快照 那么就禁止使用快照克隆
         if ($vmSnapshot == null) {
             $useSnapshot = false;
         }
         if ($useSnapshot == true & $useLink == true) {
             // 快照克隆模式 使用链接
-            // govc vm.clone -host dstHost -net.address= MACAddr -vm template-vm -link -snapshot s-name new-vm
-            $cmd = [$this->goVcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-link', '-snapshot', $vmSnapshot, $vmDestination];
+            // -link -snapshot s-name
+            $modeParameter = ['-link', '-snapshot', $vmSnapshot,];
         } elseif ($useSnapshot == true & $useLink == false) {
             // 快照克隆模式 不使用链接
-            // govc vm.clone -host dstHost -vm template-vm -snapshot s-name new-vm
-            $cmd = [$this->goVcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-snapshot', $vmSnapshot, $vmDestination];
+            // -snapshot s-name
+            $modeParameter = ['-snapshot', $vmSnapshot];
         } elseif ($useSnapshot == false & $useLink == true) {
             // 普通克隆模式 使用链接
-            // govc vm.clone -host dstHost -vm template-vm -link new-vm
-            $cmd = [$this->goVcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-link', $vmDestination];
+            // -link
+            $modeParameter = ['-link'];
         } elseif ($useSnapshot == false & $useLink == false) {
             // 普通克隆模式 不使用链接
-            // govc vm.clone -host dstHost -vm template-vm new-vm
-            $cmd = [$this->goVcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, $vmDestination];
+            //
+            $modeParameter = [];
         }
+        // 连接命令行 最后加入目标虚拟机名字
+        // new-vm
+        array_merge($cmd, $modeParameter, [$vmDestination]);
         ProcessHelper::runAsync($cmd, $this->goVcURL);
     }
 
