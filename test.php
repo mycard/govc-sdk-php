@@ -8,6 +8,6 @@ $cred = new CredentialHelper("URL", "Administrator@vsphere.local", "123456");
 //$GOVC_URL=$cred->getGoVcURL();
 $GOVC_BIN = "213";
 $timeout = 30;
-$dc="虚拟数据中心";
-$govc = new GoVC($GOVC_URL, $GOVC_BIN, $timeout,$dc);
+$dc = "虚拟数据中心";
+$govc = new GoVC($GOVC_BIN, $timeout);
 $govc->vm()->network()->change();
