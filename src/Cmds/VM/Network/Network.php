@@ -14,33 +14,17 @@ class Network
      * @var
      */
     private $goVcBin;
-    /**
-     * @var
-     */
-    private $goVcURL;
-    /**
-     * @var
-     */
-    private $timeout;
-    /**
-     * @var
-     */
-    private $dataCenter;
+
 
     /**
      * Network constructor.
-     * @param $goVcBin
-     * @param $goVcURL
-     * @param $timeout
-     * @param $dataCenter
      */
-    public function __construct($goVcBin, $goVcURL, $timeout, $dataCenter)
+    public function __construct()
     {
-        $this->goVcBin = $goVcBin;
-        $this->goVcURL = $goVcURL;
-        $this->timeout = $timeout;
-        $this->dataCenter = $dataCenter;
+        global $globalGoVcBin;
+        $this->goVcBin = $globalGoVcBin;
     }
+
 
     /**
      * @param $vm
@@ -55,7 +39,7 @@ class Network
         // 注意 即使不修改虚拟机网络 '-net' 和 '-net.address' 也必须一起使用
         // vm.network.change -vm string -net string -net.adapter string -net.address string string
         $cmd = [$this->goVcBin, 'vm.network.change', '-vm', $vm, '-net', $portGroup, '-net.adapter', $networkAdapter, '-net.address', $macAddr, $device];
-        ProcessHelper::runAsync($cmd, $this->goVcURL);
+        ProcessHelper::runAsync($cmd);
     }
 
     /**
@@ -68,6 +52,6 @@ class Network
     {
         // vm.network.add -vm string -net string -net.adapter string -net.address string
         $cmd = [$this->goVcBin, 'vm.network.change', '-vm', $vm, '-net', $portGroup, '-net.adapter', $networkAdapter, '-net.address', $macAddr];
-        ProcessHelper::runAsync($cmd, $this->goVcURL);
+        ProcessHelper::runAsync($cmd);
     }
 }

@@ -4,25 +4,27 @@
 namespace MisakaCloud\GoVc\Helper;
 
 
+/**
+ * Class CredentialHelper
+ * @package MisakaCloud\GoVc\Helper
+ */
 class CredentialHelper
 {
-    public $goVcURL;
 
     /**
-     * @return string
+     * CredentialHelper constructor.
+     * @param $url
+     * @param $username
+     * @param $password
      */
-    public function getGoVcURL(): string
-    {
-        return $this->goVcURL;
-    }
-
     function __construct($url, $username, $password)
     {
+        global $globalGoVcURL;
         $encodedPassword = urlencode($password);
-        $goVcURL = "https://" . $username . ":" . $encodedPassword . "@" . $url . "/sdk";
+        $globalGoVcURL = "https://" . $username . ":" . $encodedPassword . "@" . $url . "/sdk";
         // 下面是错误的编码方式
         // $goVcURL = "https://" . $userName . ":" . $passWord . "@" . $url . "/sdk";
         // $goVcURL = urlencode($goVcURL);
-        $this->goVcURL = $goVcURL;
+        // $this->goVcURL = $goVcURL;
     }
 }

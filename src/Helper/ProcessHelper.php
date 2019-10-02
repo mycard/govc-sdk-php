@@ -8,9 +8,13 @@ use Symfony\Component\Process\Process;
 
 class ProcessHelper
 {
-    public static function runAsync($cmd,$goVcURL)
+    public static function runAsync($cmd)
     {
-        $process = new Process($cmd, null, ['GOVC_URL' => $goVcURL]);
+        global $globalGoVcURL;
+        global $globalGoVcDataCenter;
+        global $globalProcessTimeout;
+        $process = new Process($cmd, null, ['GOVC_URL' => $globalGoVcURL, 'GOVC_DATACENTER' => $globalGoVcDataCenter]);
+        $process->setTimeout($globalProcessTimeout);
         $process->run();
 
         while ($process->isRunning()) {

@@ -12,46 +12,28 @@ use MisakaCloud\GoVC\Cmds\VM\VM;
  */
 class GoVC
 {
-    private $goVcBin;
-    private $goVcURL;
-    private $timeout;
-    private $dataCenter;
+
 
     /**
      * GoVC constructor.
      * @param $goVcBin
-     * @param $goVcURL
      * @param $timeout
-     * @param $dataCenter
      */
-    public function __construct($goVcBin, $goVcURL, $timeout, $dataCenter)
+    public function __construct($goVcBin, $timeout)
     {
-        $this->goVcBin = $goVcBin;
-        $this->goVcURL = $goVcURL;
-        $this->timeout = $timeout;
-        $this->dataCenter = $dataCenter;
+        global $globalGoVcBin;
+        global $globalProcessTimeout;
+        $globalGoVcBin = $goVcBin;
+        $globalProcessTimeout = $timeout;
     }
+
 
     /**
-     * @return mixed
+     * @return VM
      */
-    public function getTimeout()
-    {
-        return $this->timeout;
-    }
-
-    /**
-     * @param mixed $timeout
-     */
-    public function setTimeout($timeout)
-    {
-        $this->timeout = $timeout;
-    }
-
-
     public function vm()
     {
-        $vm = new VM($this->goVcBin, $this->goVcURL, $this->timeout, $this->dataCenter);
+        $vm = new VM();
         return $vm;
     }
 }

@@ -11,44 +11,24 @@ use MisakaCloud\GoVc\Helper\ProcessHelper;
  */
 class VM
 {
-    /**
-     * @var
-     */
-    private $goVcBin;
-    /**
-     * @var
-     */
-    private $goVcURL;
-    /**
-     * @var
-     */
-    private $timeout;
-    /**
-     * @var
-     */
-    private $dataCenter;
+    protected $goVcBin;
 
     /**
      * VM constructor.
-     * @param $goVcBin
-     * @param $goVcURL
-     * @param $timeout
-     * @param $dataCenter
      */
-    public function __construct($goVcBin, $goVcURL, $timeout, $dataCenter)
+    public function __construct()
     {
-        $this->goVcBin = $goVcBin;
-        $this->goVcURL = $goVcURL;
-        $this->timeout = $timeout;
-        $this->dataCenter = $dataCenter;
+        global $globalGoVcBin;
+        $this->goVcBin = $globalGoVcBin;
     }
+
 
     /**
      * @return Network
      */
     public function network()
     {
-        $vmNetwork = new Network($this->goVcBin, $this->goVcURL, $this->timeout, $this->dataCenter);
+        $vmNetwork = new Network();
         return $vmNetwork;
     }
 
@@ -92,7 +72,7 @@ class VM
         // 连接命令行 最后加入目标虚拟机名字
         // new-vm
         array_merge($cmd, $modeParameter, [$vmDestination]);
-        ProcessHelper::runAsync($cmd, $this->goVcURL);
+        ProcessHelper::runAsync($cmd);
     }
 
     /**
@@ -110,7 +90,7 @@ class VM
         // govc vm.info -e=false -g=true -r=false -t=false
 
         $cmd = [$this->goVcBin, 'vm.info', '-json', $showExtraParameter, $showResourceParameter, $showToolsConfigInfoParameter, $vm];
-        ProcessHelper::runAsync($cmd, $this->goVcURL);
+        ProcessHelper::runAsync($cmd);
     }
 
     /**
@@ -244,7 +224,7 @@ class VM
         }
 
         // 最后就是运行了哦
-        ProcessHelper::runAsync($cmd, $this->goVcURL);
+        ProcessHelper::runAsync($cmd);
     }
 
     /**
@@ -300,7 +280,7 @@ class VM
         }
 
         array_merge($cmd, [$vm]);
-        ProcessHelper::runAsync($cmd, $this->goVcURL);
+        ProcessHelper::runAsync($cmd);
     }
 
     /**
@@ -310,6 +290,6 @@ class VM
     {
         // vm.destroy
         $cmd = [$this->goVcBin, 'vm.destroy', $vm];
-        ProcessHelper::runAsync($cmd, $this->goVcURL);
+        ProcessHelper::runAsync($cmd);
     }
 }
