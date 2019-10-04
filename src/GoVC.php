@@ -19,12 +19,8 @@ class GoVC
      * @param $goVcBin
      * @param $timeout
      */
-    public function __construct($goVcBin, $timeout)
+    public function __construct()
     {
-        global $globalGoVcBin;
-        global $globalProcessTimeout;
-        $globalGoVcBin = $goVcBin;
-        $globalProcessTimeout = $timeout;
     }
 
 

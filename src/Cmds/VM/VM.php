@@ -42,11 +42,11 @@ class VM
      * @param $mac
      * @param $dataStore
      */
-    public function clone($vmTemplate, $vmSnapshot, $vmDestination, $useLink, $useSnapshot, $host, $mac, $dataStore)
+    public function clone($vmTemplate, $vmSnapshot, $vmDestination, $useLink, $useSnapshot, $host, $mac, $dataStore, $powerOn)
     {
         // 基础命令
         // govc vm.clone -host dstHost -net.address= MACAddr -vm template-vm
-        $cmd = [$this->goVcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-d', $dataStore];
+        $cmd = [$this->goVcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-d', $dataStore,'-on',$powerOn];
         $modeParameter = [];
         // 如果你不写快照 那么就禁止使用快照克隆
         if ($vmSnapshot == null) {
