@@ -9,6 +9,12 @@ class EnvironmentHelper
 
     /**
      * EnvironmentHelper constructor.
+     * @param $url
+     * @param $username
+     * @param $password
+     * @param $goVcBin
+     * @param $dataCenter
+     * @param $timeout
      */
     public function __construct($url, $username, $password, $goVcBin, $dataCenter, $timeout)
     {
