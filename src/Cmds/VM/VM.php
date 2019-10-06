@@ -46,7 +46,7 @@ class VM
     {
         // 基础命令
         // govc vm.clone -host dstHost -net.address= MACAddr -vm template-vm
-        $cmd = [$this->goVcBin, 'vm.clone', '-host=', $host, '-net.address=', $mac, '-vm', $vmTemplate, '-d', $dataStore,'-on',$powerOn];
+        $cmd = [$this->goVcBin, 'vm.clone', '-host', $host, '-net.address', $mac, '-vm', $vmTemplate, '-d', $dataStore,'-on',$powerOn];
         $modeParameter = [];
         // 如果你不写快照 那么就禁止使用快照克隆
         if ($vmSnapshot == null) {
@@ -71,7 +71,7 @@ class VM
         }
         // 连接命令行 最后加入目标虚拟机名字
         // new-vm
-        array_merge($cmd, $modeParameter, [$vmDestination]);
+        $cmd=array_merge($cmd, $modeParameter, [$vmDestination]);
         ProcessHelper::runAsync($cmd);
     }
 
@@ -120,42 +120,42 @@ class VM
         if (!empty($annotation)) {
             // -annotation string
             $annotationParameter = ['-annotation', $annotation];
-            array_merge($cmd, $annotationParameter);
+            $cmd=array_merge($cmd, $annotationParameter);
         }
 
         // CPU热添加
         if (!empty($cpuHotAdd)) {
             // -cpu-hot-add-enabled bool
             $cpuHotAddParameter = ['-cpu-hot-add-enabled', $cpuHotAdd];
-            array_merge($cmd, $cpuHotAddParameter);
+            $cmd=array_merge($cmd, $cpuHotAddParameter);
         }
 
         // CPU限制方面不填写 则设置为 -1 代表不受限制
         if (!empty($cpuLimit)) {
             // -cpu.limit int
             $cpuLimitParameter = ['-cpu.limit', $cpuLimit];
-            array_merge($cmd, $cpuLimitParameter);
+            $cmd=array_merge($cmd, $cpuLimitParameter);
         }
 
         // CPU虚拟化计数器
         if (!empty($cpuPerformanceCounter)) {
             // -vpmc-enabled bool
             $cpuPerformanceCounterParameter = ['-vpmc-enabled', $cpuPerformanceCounter];
-            array_merge($cmd, $cpuPerformanceCounterParameter);
+            $cmd=array_merge($cmd, $cpuPerformanceCounterParameter);
         }
 
         // CPU保留 最少为 0
         if (!empty($cpuReservation)) {
             // -cpu.reservation int
             $cpuReservationParameter = ['-cpu.reservation', $cpuReservation];
-            array_merge($cmd, $cpuReservationParameter);
+            $cmd=array_merge($cmd, $cpuReservationParameter);
         }
 
         // CPU核心数
         if (!empty($cpus)) {
             // -c int
             $cpusParameter = ['-c', $cpus];
-            array_merge($cmd, $cpusParameter);
+            $cmd=array_merge($cmd, $cpusParameter);
         }
 
         // CPU份额
@@ -163,42 +163,42 @@ class VM
             // -cpu.shares {normal,high,low}
             // -cpu.shares int
             $cpuSharesParameter = ['-cpu.shares', $cpuShares];
-            array_merge($cmd, $cpuSharesParameter);
+            $cmd=array_merge($cmd, $cpuSharesParameter);
         }
 
         // GuestOS 客户机系统类型
         if (!empty($guestOS)) {
             // -g string
             $guestOSParameter = ['-g', $guestOS];
-            array_merge($cmd, $guestOSParameter);
+            $cmd=array_merge($cmd, $guestOSParameter);
         }
 
         // 内存限制 同CPU
         if (!empty($memoryLimit)) {
             // -mem.limit int
             $memoryLimitParameter = ['-mem.limit', $memoryLimit];
-            array_merge($cmd, $memoryLimitParameter);
+            $cmd=array_merge($cmd, $memoryLimitParameter);
         }
 
         // 内存保留 同CPU
         if (!empty($memoryReservation)) {
             // -mem.reservation int
             $memoryReservationParameter = ['-mem.limit', $memoryReservation];
-            array_merge($cmd, $memoryReservationParameter);
+            $cmd=array_merge($cmd, $memoryReservationParameter);
         }
 
         // 内存大小 单位是MB
         if (!empty($memory)) {
             // -m int
             $memoryParameter = ['-m', $memory];
-            array_merge($cmd, $memoryParameter);
+            $cmd=array_merge($cmd, $memoryParameter);
         }
 
         // 内存热添加
         if (!empty($memoryHotAdd)) {
             //  -memory-hot-add-enabled bool
             $memoryHotAddParameter = ['-memory-hot-add-enabled', $memoryHotAdd];
-            array_merge($cmd, $memoryHotAddParameter);
+            $cmd=array_merge($cmd, $memoryHotAddParameter);
         }
 
         // 内存份额 同CPU
@@ -206,21 +206,21 @@ class VM
             // -mem.shares {normal,high,low}
             // -mem.shares int
             $memoryShareParameter = ['-mem.shares', $memoryShare];
-            array_merge($cmd, $memoryShareParameter);
+            $cmd=array_merge($cmd, $memoryShareParameter);
         }
 
         // 嵌套虚拟化
         if (!empty($nestedHvEnabled)) {
             // -nested-hv-enabled bool
             $nestedHvEnabledParameter = ['-nested-hv-enabled', $nestedHvEnabled];
-            array_merge($cmd, $nestedHvEnabledParameter);
+            $cmd=array_merge($cmd, $nestedHvEnabledParameter);
         }
 
         // 同步系统时间
         if (!empty($syncTimeWithHost)) {
             // -sync-time-with-host bool
             $syncTimeWithHostParameter = ['-sync-time-with-host', $syncTimeWithHost];
-            array_merge($cmd, $syncTimeWithHostParameter);
+            $cmd=array_merge($cmd, $syncTimeWithHostParameter);
         }
 
         // 最后就是运行了哦
@@ -265,21 +265,21 @@ class VM
                 break;
         }
 
-        array_merge($cmd, $powerActionTypeParameter);
+        $cmd=array_merge($cmd, $powerActionTypeParameter);
 
         if (!empty($waitForComplete)) {
             // -wait bool
             $waitForCompleteParameter = ['-wait', $waitForComplete];
-            array_merge($cmd, $waitForCompleteParameter);
+            $cmd=array_merge($cmd, $waitForCompleteParameter);
         }
 
         if (!empty($force)) {
             // -force bool
             $forceParameter = ['-force', $force];
-            array_merge($cmd, $forceParameter);
+            $cmd=array_merge($cmd, $forceParameter);
         }
 
-        array_merge($cmd, [$vm]);
+        $cmd=array_merge($cmd, [$vm]);
         ProcessHelper::runAsync($cmd);
     }
 
