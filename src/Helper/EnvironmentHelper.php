@@ -1,7 +1,7 @@
 <?php
 
 
-namespace MisakaCloud\GoVc\Helper;
+namespace MisakaCloud\GoVC\Helper;
 
 
 class EnvironmentHelper
