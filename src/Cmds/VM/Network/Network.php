@@ -2,7 +2,7 @@
 
 namespace MisakaCloud\GoVC\Cmds\VM\Network;
 
-use MisakaCloud\GoVc\Helper\ProcessHelper;
+use MisakaCloud\GoVC\Helper\ProcessHelper;
 
 /**
  * Class Network

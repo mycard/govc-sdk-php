@@ -1,12 +1,12 @@
 <?php
 
 
-namespace MisakaCloud\GoVc\Helper;
+namespace MisakaCloud\GoVC\Helper;
 
 
 /**
  * Class CredentialHelper
- * @package MisakaCloud\GoVc\Helper
+ * @package MisakaCloud\GoVC\Helper
  */
 class CredentialHelper
 {

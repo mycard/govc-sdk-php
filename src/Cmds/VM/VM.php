@@ -3,7 +3,7 @@
 namespace MisakaCloud\GoVC\Cmds\VM;
 
 use MisakaCloud\GoVC\Cmds\VM\Network\Network;
-use MisakaCloud\GoVc\Helper\ProcessHelper;
+use MisakaCloud\GoVC\Helper\ProcessHelper;
 
 /**
  * Class VM
