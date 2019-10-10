@@ -4,6 +4,7 @@ namespace MisakaCloud\GoVC\Cmds\VM;
 
 use MisakaCloud\GoVC\Cmds\VM\Network\Network;
 use MisakaCloud\GoVC\Helper\ProcessHelper;
+use MisakaCloud\GoVC\Helper\TypeHelper;
 
 /**
  * Class VM
@@ -47,7 +48,8 @@ class VM
     {
         // 基础命令
         // govc vm.clone -host dstHost -net.address= MACAddr -vm template-vm
-        $cmd = [$this->goVcBin, 'vm.clone', '-vm', $vmTemplate, '-host', $host, '-net.address', $mac, '-ds', $dataStore, '-on', $powerOn];
+        $vmPowerParameter = '-on=' . TypeHelper::boolToString($powerOn);
+        $cmd = [$this->goVcBin, 'vm.clone', '-vm', $vmTemplate, '-host', $host, '-net.address=' . $mac, '-ds', $dataStore, $vmPowerParameter, '-dump=true'];
         $modeParameter = [];
         // 如果你不写快照 那么就禁止使用快照克隆
         if ($vmSnapshot == null) {
@@ -56,7 +58,7 @@ class VM
         if ($useSnapshot == true & $useLink == true) {
             // 快照克隆模式 使用链接
             // -link -snapshot s-name
-            $modeParameter = ['-link', '-snapshot', $vmSnapshot,];
+            $modeParameter = ['-link=' . TypeHelper::boolToString($useLink), '-snapshot', $vmSnapshot];
         } elseif ($useSnapshot == true & $useLink == false) {
             // 快照克隆模式 不使用链接
             // -snapshot s-name
@@ -64,7 +66,7 @@ class VM
         } elseif ($useSnapshot == false & $useLink == true) {
             // 普通克隆模式 使用链接
             // -link
-            $modeParameter = ['-link'];
+            $modeParameter = ['-link=' . $useLink];
         } elseif ($useSnapshot == false & $useLink == false) {
             // 普通克隆模式 不使用链接
             //
@@ -84,9 +86,9 @@ class VM
      */
     public function info($vm, $showExtra, $showResource, $showToolsConfigInfo)
     {
-        $showExtraParameter = '-e=' . $showExtra;
-        $showResourceParameter = '-r=' . $showResource;
-        $showToolsConfigInfoParameter = '-t=' . $showToolsConfigInfo;
+        $showExtraParameter = '-e=' . TypeHelper::boolToString($showExtra);
+        $showResourceParameter = '-r=' . TypeHelper::boolToString($showResource);
+        $showToolsConfigInfoParameter = '-t=' . TypeHelper::boolToString($showToolsConfigInfo);
         // 查询需虚拟机信息
         // govc vm.info -e=false -g=true -r=false -t=false
 
@@ -270,13 +272,13 @@ class VM
 
         if (!empty($waitForComplete)) {
             // -wait bool
-            $waitForCompleteParameter = ['-wait', $waitForComplete];
+            $waitForCompleteParameter = ['-wait', TypeHelper::boolToString($waitForComplete)];
             $cmd = array_merge($cmd, $waitForCompleteParameter);
         }
 
         if (!empty($force)) {
             // -force bool
-            $forceParameter = ['-force', $force];
+            $forceParameter = ['-force=', TypeHelper::boolToString($force)];
             $cmd = array_merge($cmd, $forceParameter);
         }
 
