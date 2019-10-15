@@ -19,7 +19,7 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="Pter-WHMCS">
+      <paths name="Pter-WHMCS-Dev">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />

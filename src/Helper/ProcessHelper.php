@@ -17,13 +17,20 @@ class ProcessHelper
         $process = new Process($cmd, null, ['GOVC_URL' => $globalGoVcURL, 'GOVC_DATACENTER' => $globalGoVcDataCenter]);
         $process->enableOutput();
         $process->setTimeout($globalProcessTimeout);
-//        print_r($process->getEnv());
-//        print_r($process->getCommandLine());
+
         $process->run();
+//        function ($type, $buffer) {
+//            if (Process::ERR === $type) {
+//                echo 'ERR > ' . $buffer;
+//            } else {
+//                echo 'OUT > ' . $buffer;
+//            }
+//        }
+
 
         while ($process->isRunning()) {
             echo "正在运行";
-            echo $process->getOutput();
+            $process->setTimeout(10);
         }
         // 失败处理
         if (!$process->isSuccessful()) {

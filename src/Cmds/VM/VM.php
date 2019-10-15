@@ -75,7 +75,7 @@ class VM
         // 连接命令行 最后加入目标虚拟机名字
         // new-vm
         $cmd = array_merge($cmd, $modeParameter, [$vmDestination]);
-        ProcessHelper::runAsync($cmd);
+        return ProcessHelper::runAsync($cmd);
     }
 
     /**
@@ -93,7 +93,7 @@ class VM
         // govc vm.info -e=false -g=true -r=false -t=false
 
         $cmd = [$this->goVcBin, 'vm.info', '-json', $showExtraParameter, $showResourceParameter, $showToolsConfigInfoParameter, $vm];
-        ProcessHelper::runAsync($cmd);
+        return ProcessHelper::runAsync($cmd);
     }
 
     /**
@@ -227,7 +227,7 @@ class VM
         }
 
         // 最后就是运行了哦
-        ProcessHelper::runAsync($cmd);
+        return ProcessHelper::runAsync($cmd);
     }
 
     /**
@@ -283,7 +283,7 @@ class VM
         }
 
         $cmd = array_merge($cmd, [$vm]);
-        ProcessHelper::runAsync($cmd);
+        return ProcessHelper::runAsync($cmd);
     }
 
     /**
@@ -293,6 +293,6 @@ class VM
     {
         // vm.destroy
         $cmd = [$this->goVcBin, 'vm.destroy', $vm];
-        ProcessHelper::runAsync($cmd);
+        return ProcessHelper::runAsync($cmd);
     }
 }

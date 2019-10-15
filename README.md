@@ -1,4 +1,3 @@
 # StuInfoMgr
 ## 允许的变量表
-* GOVC_DATACENTER
-* GOVC_URL
+此软件包已废弃
