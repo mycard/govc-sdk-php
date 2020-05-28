@@ -34,9 +34,9 @@ class ProcessHelper
         }
         // 失败处理
         if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process->getOutput());
+            throw new ProcessFailedException($process);
 //            return $process->getOutput();
         }
-        return $process->getOutput();
+        return $process;
     }
 }
